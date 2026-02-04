@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OllyWP Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f8f9fa; }
+        .key-box { font-family: monospace; font-size: 12px; word-break: break-all; background: #e9ecef; padding: 8px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+<div class="container py-5" style="max-width: 600px;">
+    <h2 class="mb-4">OllyWP Test</h2>
+
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="d-flex gap-2 mb-3">
+                <button id="subscribeBtn" class="btn btn-primary" onclick="subscribe()">Subscribe</button>
+                <button id="unsubscribeBtn" class="btn btn-outline-secondary" onclick="unsubscribe()" disabled>Unsubscribe</button>
+                <button id="sendBtn" class="btn btn-success" onclick="send()" disabled>Send</button>
+            </div>
+            <div id="status"></div>
+        </div>
+    </div>
+
+    <div id="subInfo" class="card mb-3 d-none">
+        <div class="card-body">
+            <small class="text-muted">Endpoint</small>
+            <div id="endpoint" class="key-box mb-2"></div>
+            <small class="text-muted">p256dh</small>
+            <div id="p256dh" class="key-box mb-2"></div>
+            <small class="text-muted">auth</small>
+            <div id="auth" class="key-box"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span>Log</span>
+            <button class="btn btn-sm btn-outline-secondary" onclick="document.getElementById('log').innerHTML=''">Clear</button>
+        </div>
+        <div class="card-body p-0">
+            <pre id="log" class="m-0 p-3" style="max-height: 300px; overflow-y: auto; font-size: 12px; background: #212529; color: #f8f9fa;"></pre>
+        </div>
+    </div>
+</div>
+
+<script>
+    let vapidKey = '', sub = null;
+
+    const log = (msg, type = '') => {
+        const el = document.getElementById('log');
+        const time = new Date().toLocaleTimeString('en-GB');
+        const color = type === 'ok' ? '#28a745' : type === 'err' ? '#dc3545' : '#6c757d';
+        el.innerHTML = `<span style="color:${color}">[${time}] ${msg}</span>\n` + el.innerHTML;
+    };
+
+    const status = (msg, type = 'info') => {
+        const cls = { info: 'alert-info', ok: 'alert-success', err: 'alert-danger' };
+        document.getElementById('status').innerHTML = `<div class="alert ${cls[type]} py-2 mb-0">${msg}</div>`;
+    };
+
+    const updateUI = () => {
+        document.getElementById('subscribeBtn').disabled = !!sub;
+        document.getElementById('unsubscribeBtn').disabled = !sub;
+        document.getElementById('sendBtn').disabled = !sub;
+        document.getElementById('subInfo').classList.toggle('d-none', !sub);
+        if (sub) {
+            document.getElementById('endpoint').textContent = sub.endpoint;
+            document.getElementById('p256dh').textContent = sub.keys.p256dh;
+            document.getElementById('auth').textContent = sub.keys.auth;
+        }
+    };
+
+    const b64ToArray = s => {
+        const pad = '='.repeat((4 - s.length % 4) % 4);
+        const b64 = (s + pad).replace(/-/g, '+').replace(/_/g, '/');
+        return Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    };
+
+    (async () => {
+        try {
+            const res = await fetch('/api/vapid-key');
+            vapidKey = (await res.json()).publicKey;
+            log('VAPID key loaded', 'ok');
+        } catch (e) { log('Failed to load VAPID key: ' + e.message, 'err'); }
+    })();
+
+    async function subscribe() {
+        try {
+            status('Subscribing...', 'info');
+            const reg = await navigator.serviceWorker.register('/sw.js');
+            await navigator.serviceWorker.ready;
+
+            const perm = await Notification.requestPermission();
+            if (perm !== 'granted') throw new Error('Permission denied');
+
+            const s = await reg.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: b64ToArray(vapidKey)
+            });
+
+            sub = s.toJSON();
+            updateUI();
+            status('Subscribed', 'ok');
+            log('Subscribed to ' + (sub.endpoint.includes('fcm') ? 'FCM' : sub.endpoint.includes('mozilla') ? 'Mozilla' : 'Push Service'), 'ok');
+        } catch (e) {
+            status('Error: ' + e.message, 'err');
+            log(e.message, 'err');
+        }
+    }
+
+    async function unsubscribe() {
+        try {
+            const reg = await navigator.serviceWorker.ready;
+            const s = await reg.pushManager.getSubscription();
+            if (s) await s.unsubscribe();
+            sub = null;
+            updateUI();
+            status('Unsubscribed', 'ok');
+            log('Unsubscribed', 'ok');
+        } catch (e) {
+            status('Error: ' + e.message, 'err');
+            log(e.message, 'err');
+        }
+    }
+
+    async function send() {
+        try {
+            status('Sending...', 'info');
+            const res = await fetch('/api/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ endpoint: sub.endpoint, keys: sub.keys })
+            });
+            const data = await res.json();
+            if (data.success) {
+                status('Sent', 'ok');
+                log('Notification sent', 'ok');
+            } else {
+                throw new Error(data.error || 'Failed');
+            }
+        } catch (e) {
+            status('Error: ' + e.message, 'err');
+            log(e.message, 'err');
+        }
+    }
+</script>
+</body>
+</html>

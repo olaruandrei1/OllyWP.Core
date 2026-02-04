@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <PackageId>OllyWP.Core</PackageId>
+        <Version>1.0.0</Version>
+        <Authors>Andrei Olaru</Authors>
+        <Description>OllyWP (Olimp) - Cross-platform web push notifications library</Description>
+        <PackageTags>webpush;push-notifications;vapid;notifications;fcm;apns;wns;olimp;ollywp</PackageTags>
+        <PackageProjectUrl>https://github.com/olaruandrei1/OllyWP.Core</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/olaruandrei1/OllyWP.Core</RepositoryUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+        <NoWarn>$(NoWarn);CS1591</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\OllyWP.Core.Application\OllyWP.Core.Application.csproj" />
+        <ProjectReference Include="..\OllyWP.Core.Infrastructure\OllyWP.Core.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
+    </ItemGroup>
+</Project>
