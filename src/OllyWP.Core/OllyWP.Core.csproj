@@ -5,19 +5,25 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 
-        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <PackageId>OllyWP.Core</PackageId>
         <Version>1.0.0</Version>
-        <Authors>Andrei Olaru</Authors>
-        <Description>OllyWP (Olimp) - Cross-platform web push notifications library</Description>
-        <PackageTags>webpush;push-notifications;vapid;notifications;fcm;apns;wns;olimp;ollywp</PackageTags>
+		<Authors>Andrei Olaru</Authors>
+		<Company>Andrei Olaru</Company>
+		<Description>Modern .NET library for Web Push Notifications with AES-128-GCM encryption, VAPID authentication, and fluent API. Supports batches and parallel processing.</Description>
+		<PackageTags>webpush;web push;web-push;push-notifications;vapid;notifications;fcm;apns;wns;olimp;ollywp</PackageTags>
         <PackageProjectUrl>https://github.com/olaruandrei1/OllyWP.Core</PackageProjectUrl>
         <RepositoryUrl>https://github.com/olaruandrei1/OllyWP.Core</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageIcon>icon.png</PackageIcon>
 
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 
-        <NoWarn>$(NoWarn);CS1591</NoWarn>
+		<PackageReleaseNotes>
+			Initial release - Fluent API, AES-128-GCM encryption, VAPID auth, batch processing, parallel execution.
+		</PackageReleaseNotes>
+
+		<NoWarn>$(NoWarn);CS1591</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
@@ -28,4 +34,9 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
     </ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
+		<None Include="..\..\icon.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
 </Project>
