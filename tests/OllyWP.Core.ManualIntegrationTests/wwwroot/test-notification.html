@@ -3,150 +3,474 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OllyWP Test</title>
+    <title>OllyWP Complete Test Suite</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <style>
-        body { background: #f8f9fa; }
-        .key-box { font-family: monospace; font-size: 12px; word-break: break-all; background: #e9ecef; padding: 8px; border-radius: 4px; }
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 2rem 0;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+            .header h2 {
+                margin: 0;
+                font-weight: 700;
+                font-size: 2rem;
+            }
+
+            .header p {
+                margin: 0.5rem 0 0 0;
+                opacity: 0.9;
+                font-size: 0.95rem;
+            }
+
+        .section {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+            .section:last-child {
+                border-bottom: none;
+            }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-desc {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        .test-btn {
+            width: 100%;
+            padding: 0.875rem;
+            font-weight: 600;
+            border-radius: 10px;
+            border: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+            .test-btn:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
+            .test-btn:hover:not(:disabled) {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            }
+
+        .btn-subscribe {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-test {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .log-card {
+            background: #1e1e1e;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .log-header {
+            background: #2d2d2d;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .log-title {
+            color: #f8f9fa;
+            font-weight: 600;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .btn-clear {
+            background: #3d3d3d;
+            color: #f8f9fa;
+            border: none;
+            padding: 0.375rem 0.875rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+            .btn-clear:hover {
+                background: #4d4d4d;
+            }
+
+        #log {
+            padding: 1.5rem;
+            margin: 0;
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            background: #1e1e1e;
+            color: #f8f9fa;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+        }
+
+            #log::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            #log::-webkit-scrollbar-track {
+                background: #2d2d2d;
+            }
+
+            #log::-webkit-scrollbar-thumb {
+                background: #4d4d4d;
+                border-radius: 4px;
+            }
     </style>
 </head>
 <body>
-<div class="container py-5" style="max-width: 600px;">
-    <h2 class="mb-4">OllyWP Test</h2>
-
-    <div class="card mb-3">
-        <div class="card-body">
-            <div class="d-flex gap-2 mb-3">
-                <button id="subscribeBtn" class="btn btn-primary" onclick="subscribe()">Subscribe</button>
-                <button id="unsubscribeBtn" class="btn btn-outline-secondary" onclick="unsubscribe()" disabled>Unsubscribe</button>
-                <button id="sendBtn" class="btn btn-success" onclick="send()" disabled>Send</button>
+    <div class="container" style="max-width: 800px;">
+        <div class="main-card">
+            <div class="header">
+                <h2><i class="bi bi-bell-fill"></i> OllyWP Complete Test Suite</h2>
+                <p>Test all notification methods before production</p>
             </div>
-            <div id="status"></div>
+
+            <!-- Setup -->
+            <div class="section">
+                <div class="section-title">
+                    <i class="bi bi-gear-fill"></i> Setup
+                </div>
+                <button id="subscribeBtn" class="test-btn btn-subscribe" onclick="subscribe()">
+                    <i class="bi bi-bell-fill"></i> Subscribe to Notifications
+                </button>
+                <div class="stats-grid" style="margin-top: 1rem;">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalSent">0</div>
+                        <div class="stat-label">Total Sent</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="successRate">0%</div>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="testsPassed">0/6</div>
+                        <div class="stat-label">Tests Passed</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">
+                    <i class="bi bi-1-circle-fill"></i> Single Recipient
+                </div>
+                <div class="section-desc">
+                    <code>WithPayload().WithRecipient().AndSendIt()</code>
+                </div>
+                <button class="test-btn btn-test" onclick="testSingle()" disabled id="btn1">
+                    <i class="bi bi-send-fill"></i> Test Single Notification
+                </button>
+            </div>
+
+            <div class="section">
+                <div class="section-title">
+                    <i class="bi bi-2-circle-fill"></i> Multiple Recipients (Same Payload)
+                </div>
+                <div class="section-desc">
+                    <code>WithPayload().WithRecipients([...]).AndSendIt()</code>
+                </div>
+                <button class="test-btn btn-test" onclick="testMultiple()" disabled id="btn2">
+                    <i class="bi bi-people-fill"></i> Test 3 Recipients
+                </button>
+            </div>
+
+            <div class="section">
+                <div class="section-title">
+                    <i class="bi bi-3-circle-fill"></i> Single Batch
+                </div>
+                <div class="section-desc">
+                    <code>WithBatch(payload, [...recipients]).AndSendItToAll()</code>
+                </div>
+                <button class="test-btn btn-test" onclick="testBatch()" disabled id="btn3">
+                    <i class="bi bi-box-fill"></i> Test Batch Mode
+                </button>
+            </div>
+
+            <div class="section">
+                <div class="section-title">
+                    <i class="bi bi-4-circle-fill"></i> Multiple Batches (Different Payloads)
+                </div>
+                <div class="section-desc">
+                    <code>WithBatch(...).WithBatch(...).WithBatch(...).AndSendItToAll()</code>
+                </div>
+                <button class="test-btn btn-test" onclick="testBatches()" disabled id="btn4">
+                    <i class="bi bi-boxes"></i> Test 3 Different Batches
+                </button>
+            </div>
+
+            <div class="section">
+                <div class="section-title">
+                    <i class="bi bi-5-circle-fill"></i> Parallelism & Error Handling
+                </div>
+                <div class="section-desc">
+                    <code>WithMaxParallelism(5).WithContinueOnError(true)</code>
+                </div>
+                <button class="test-btn btn-test" onclick="testStress()" disabled id="btn5">
+                    <i class="bi bi-lightning-fill"></i> Test 10 Notifications (Stress Test)
+                </button>
+            </div>
+
+            <div class="section">
+                <div class="section-title">
+                    <i class="bi bi-rocket-fill"></i> Complete Integration Test
+                </div>
+                <div class="section-desc">
+                    Run all tests sequentially to verify everything works
+                </div>
+                <button class="test-btn btn-test" onclick="runAllTests()" disabled id="btnAll">
+                    <i class="bi bi-play-fill"></i> Run All Tests
+                </button>
+            </div>
+        </div>
+
+        <div class="main-card">
+            <div class="log-card">
+                <div class="log-header">
+                    <span class="log-title"><i class="bi bi-terminal-fill"></i> Test Console</span>
+                    <button class="btn-clear" onclick="clearLog()">
+                        <i class="bi bi-trash3"></i> Clear
+                    </button>
+                </div>
+                <pre id="log"></pre>
+            </div>
         </div>
     </div>
 
-    <div id="subInfo" class="card mb-3 d-none">
-        <div class="card-body">
-            <small class="text-muted">Endpoint</small>
-            <div id="endpoint" class="key-box mb-2"></div>
-            <small class="text-muted">p256dh</small>
-            <div id="p256dh" class="key-box mb-2"></div>
-            <small class="text-muted">auth</small>
-            <div id="auth" class="key-box"></div>
-        </div>
-    </div>
+    <script>
+        let vapidKey = '', sub = null;
+        let stats = { sent: 0, success: 0, failed: 0, tests: 0 };
 
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <span>Log</span>
-            <button class="btn btn-sm btn-outline-secondary" onclick="document.getElementById('log').innerHTML=''">Clear</button>
-        </div>
-        <div class="card-body p-0">
-            <pre id="log" class="m-0 p-3" style="max-height: 300px; overflow-y: auto; font-size: 12px; background: #212529; color: #f8f9fa;"></pre>
-        </div>
-    </div>
-</div>
+        const log = (msg, type = '') => {
+            const el = document.getElementById('log');
+            const time = new Date().toLocaleTimeString('en-GB');
+            const colors = { ok: '#4ade80', err: '#f87171', warn: '#fbbf24', info: '#60a5fa', '': '#94a3b8' };
+            const icons = {
+                ok: '[OK]',
+                err: '[ERR]',
+                warn: '[WRN]',
+                info: '[INF]',
+                '': '[---]'
+            };
+            el.innerHTML = `<span style="color:${colors[type]}">${icons[type]} [${time}] ${msg}</span>\n` + el.innerHTML;
+        };
 
-<script>
-    let vapidKey = '', sub = null;
+        const clearLog = () => document.getElementById('log').innerHTML = '';
 
-    const log = (msg, type = '') => {
-        const el = document.getElementById('log');
-        const time = new Date().toLocaleTimeString('en-GB');
-        const color = type === 'ok' ? '#28a745' : type === 'err' ? '#dc3545' : '#6c757d';
-        el.innerHTML = `<span style="color:${color}">[${time}] ${msg}</span>\n` + el.innerHTML;
-    };
+        const updateStats = () => {
+            document.getElementById('totalSent').textContent = stats.sent;
+            document.getElementById('successRate').textContent =
+                stats.sent > 0 ? Math.round((stats.success / stats.sent) * 100) + '%' : '0%';
+            document.getElementById('testsPassed').textContent = `${stats.tests}/6`;
+        };
 
-    const status = (msg, type = 'info') => {
-        const cls = { info: 'alert-info', ok: 'alert-success', err: 'alert-danger' };
-        document.getElementById('status').innerHTML = `<div class="alert ${cls[type]} py-2 mb-0">${msg}</div>`;
-    };
-
-    const updateUI = () => {
-        document.getElementById('subscribeBtn').disabled = !!sub;
-        document.getElementById('unsubscribeBtn').disabled = !sub;
-        document.getElementById('sendBtn').disabled = !sub;
-        document.getElementById('subInfo').classList.toggle('d-none', !sub);
-        if (sub) {
-            document.getElementById('endpoint').textContent = sub.endpoint;
-            document.getElementById('p256dh').textContent = sub.keys.p256dh;
-            document.getElementById('auth').textContent = sub.keys.auth;
-        }
-    };
-
-    const b64ToArray = s => {
-        const pad = '='.repeat((4 - s.length % 4) % 4);
-        const b64 = (s + pad).replace(/-/g, '+').replace(/_/g, '/');
-        return Uint8Array.from(atob(b64), c => c.charCodeAt(0));
-    };
-
-    (async () => {
-        try {
-            const res = await fetch('/api/vapid-key');
-            vapidKey = (await res.json()).publicKey;
-            log('VAPID key loaded', 'ok');
-        } catch (e) { log('Failed to load VAPID key: ' + e.message, 'err'); }
-    })();
-
-    async function subscribe() {
-        try {
-            status('Subscribing...', 'info');
-            const reg = await navigator.serviceWorker.register('/sw.js');
-            await navigator.serviceWorker.ready;
-
-            const perm = await Notification.requestPermission();
-            if (perm !== 'granted') throw new Error('Permission denied');
-
-            const s = await reg.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: b64ToArray(vapidKey)
+        const enableTests = (enabled) => {
+            ['btn1', 'btn2', 'btn3', 'btn4', 'btn5', 'btnAll'].forEach(id => {
+                document.getElementById(id).disabled = !enabled;
             });
+        };
 
-            sub = s.toJSON();
-            updateUI();
-            status('Subscribed', 'ok');
-            log('Subscribed to ' + (sub.endpoint.includes('fcm') ? 'FCM' : sub.endpoint.includes('mozilla') ? 'Mozilla' : 'Push Service'), 'ok');
-        } catch (e) {
-            status('Error: ' + e.message, 'err');
-            log(e.message, 'err');
-        }
-    }
+        const b64ToArray = s => {
+            const pad = '='.repeat((4 - s.length % 4) % 4);
+            const b64 = (s + pad).replace(/-/g, '+').replace(/_/g, '/');
+            return Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+        };
 
-    async function unsubscribe() {
-        try {
-            const reg = await navigator.serviceWorker.ready;
-            const s = await reg.pushManager.getSubscription();
-            if (s) await s.unsubscribe();
-            sub = null;
-            updateUI();
-            status('Unsubscribed', 'ok');
-            log('Unsubscribed', 'ok');
-        } catch (e) {
-            status('Error: ' + e.message, 'err');
-            log(e.message, 'err');
-        }
-    }
+        (async () => {
+            try {
+                const res = await fetch('/api/vapid-key');
+                vapidKey = (await res.json()).publicKey;
+                log('VAPID key loaded', 'ok');
 
-    async function send() {
-        try {
-            status('Sending...', 'info');
-            const res = await fetch('/api/subscribe', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ endpoint: sub.endpoint, keys: sub.keys })
-            });
-            const data = await res.json();
-            if (data.success) {
-                status('Sent', 'ok');
-                log('Notification sent', 'ok');
-            } else {
-                throw new Error(data.error || 'Failed');
+                const reg = await navigator.serviceWorker.register('/sw.js');
+                await navigator.serviceWorker.ready;
+
+                const existingSub = await reg.pushManager.getSubscription();
+                if (existingSub) {
+                    log('Cleaning up old subscription...', 'warn');
+                    await existingSub.unsubscribe();
+                    log('Old subscription removed', 'ok');
+                }
+
+                log('Ready to subscribe', 'info');
+            } catch (e) {
+                log('Initialization error: ' + e.message, 'err');
             }
-        } catch (e) {
-            status('Error: ' + e.message, 'err');
-            log(e.message, 'err');
+        })();
+
+        async function subscribe() {
+            try {
+                log('Subscribing...', 'info');
+                const reg = await navigator.serviceWorker.register('/sw.js');
+                await navigator.serviceWorker.ready;
+
+                const perm = await Notification.requestPermission();
+                if (perm !== 'granted') throw new Error('Permission denied');
+
+                const existingSub = await reg.pushManager.getSubscription();
+                if (existingSub) await existingSub.unsubscribe();
+
+                const s = await reg.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: b64ToArray(vapidKey)
+                });
+
+                sub = s.toJSON();
+                document.getElementById('subscribeBtn').disabled = true;
+                document.getElementById('subscribeBtn').innerHTML = '<i class="bi bi-check-circle-fill"></i> Subscribed';
+                enableTests(true);
+
+                log('Subscribed successfully! All tests unlocked.', 'ok');
+            } catch (e) {
+                log('Subscribe error: ' + e.message, 'err');
+            }
         }
-    }
-</script>
+
+        async function callAPI(endpoint, testName) {
+            try {
+                log(`Starting ${testName}...`, 'info');
+                const res = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ endpoint: sub.endpoint, keys: sub.keys })
+                });
+                const data = await res.json();
+
+                stats.sent += data.total || 1;
+                if (data.success) {
+                    stats.success += data.delivered || 1;
+                    stats.tests++;
+                    log(`${testName} - ${data.delivered}/${data.total} delivered`, 'ok');
+                } else {
+                    stats.failed += (data.total || 1) - (data.delivered || 0);
+                    log(`${testName} - Failed`, 'err');
+                }
+
+                updateStats();
+                return data.success;
+            } catch (e) {
+                log(`${testName} error: ${e.message}`, 'err');
+                stats.failed++;
+                updateStats();
+                return false;
+            }
+        }
+
+        async function testSingle() {
+            await callAPI('/api/send-single', 'Test 1: Single Recipient');
+        }
+
+        async function testMultiple() {
+            await callAPI('/api/send-multiple', 'Test 2: Multiple Recipients');
+        }
+
+        async function testBatch() {
+            await callAPI('/api/send-batch', 'Test 3: Single Batch');
+        }
+
+        async function testBatches() {
+            await callAPI('/api/send-batches', 'Test 4: Multiple Batches');
+        }
+
+        async function testStress() {
+            await callAPI('/api/send-stress', 'Test 5: Stress Test (10 notifications)');
+        }
+
+        async function runAllTests() {
+            log('========================================', '');
+            log('RUNNING COMPLETE TEST SUITE', 'info');
+            log('========================================', '');
+
+            stats = { sent: 0, success: 0, failed: 0, tests: 0 };
+            updateStats();
+
+            await testSingle();
+            await new Promise(r => setTimeout(r, 500));
+
+            await testMultiple();
+            await new Promise(r => setTimeout(r, 500));
+
+            await testBatch();
+            await new Promise(r => setTimeout(r, 500));
+
+            await testBatches();
+            await new Promise(r => setTimeout(r, 500));
+
+            await testStress();
+
+            log('========================================', '');
+            log(`TEST SUITE COMPLETE: ${stats.tests}/6 tests passed`, stats.tests === 6 ? 'ok' : 'warn');
+            log('========================================', '');
+        }
+    </script>
 </body>
 </html>

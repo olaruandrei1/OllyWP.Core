@@ -15,7 +15,7 @@ self.addEventListener('push', function(event) {
         badge: null,
         image: null,
         url: '/',
-        tag: 'ollywp-default',
+        tag: null,
         silent: false,
         data: {}
     };
@@ -38,7 +38,7 @@ self.addEventListener('push', function(event) {
                 badge: parsed.badge || data.badge,
                 image: parsed.image || data.image,
                 url: parsed.url || data.url,
-                tag: parsed.tag || data.tag,
+                tag: parsed.tag || null,
                 silent: parsed.silent || data.silent,
                 data: parsed.data || parsed.customData || data.data
             };
@@ -94,7 +94,6 @@ self.addEventListener('push', function(event) {
     );
 });
 
-// Notification click event
 self.addEventListener('notificationclick', function(event) {
     console.log('[OllyWP SW] Notification clicked!');
 
